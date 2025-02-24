@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - 5469:5432
+    volumes:
+      - strawberry_db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DEVELOPMENT_DB_USERNAME}
+      POSTGRES_PASSWORD: ${DEVELOPMENT_DB_PASSWORD}
+      POSTGRES_DB: ${DEVELOPMENT_DB_DATABASE}
+    healthcheck:
+      test: ['CMD', 'pg_isready', '--host=localhost', '--username=postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_interval: 5s
+      start_period: 30s
+    env_file:
+      - .env
+
+volumes:
+  strawberry_db_data:
