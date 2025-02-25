@@ -5,7 +5,7 @@ export async function up(queryInterface, Sequelize) {
 	const userData = [
 		{
 			id: 1000,
-			username: 'test',
+			username: 'Test',
 			password: '$2b$10$RBPNFitPnDV1C6SH3YyVHu2NTHS.s0A1hbYS7k4xvTqHcElDG44LO',
 			display_name: 'Test Users',
 		},
