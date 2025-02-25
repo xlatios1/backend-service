@@ -32,10 +32,10 @@ export const resolvers = {
 		},
 
 		async checkUserExists(_parent, args, context) {
-			const { user } = context
+			const { user, authToken } = context
 			if (!user) throw new UnauthorizedError()
 
-			return await new UserService().checkUserExists(user)
+			return await new UserService().checkUserExists(Number(user.id), authToken)
 		},
 	},
 	Strawberry: {

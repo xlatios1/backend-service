@@ -28,7 +28,7 @@ export const typeDefs = `#graphql
 		getAllStrawberry: [Strawberry!]
 		getStrawberryById: [Strawberry!]
 		addStrawberry(count: Int!): Boolean!
-		checkUserExists: Boolean!
+		checkUserExists: AuthResponse
     }
 	type Mutation{
 		authenticate(username: String!, password: String!, deviceToken: String): AuthResponse! 

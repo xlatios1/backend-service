@@ -66,12 +66,15 @@ export class UserService {
 		}
 	}
 
-	async checkUserExists(userId: string) {
+	async checkUserExists(userId: number, deviceToken?: string) {
+		console.log(userId)
 		const user = await UsersDBModel.findOne({
 			where: { id: userId },
 			raw: true,
 		})
-		return !user
+
+		if (!user) return null
+		return this.generateAuthResponse(user, deviceToken)
 	}
 
 	private async generateAuthResponse(user: UsersDBModel, deviceToken?: string) {

@@ -30,7 +30,7 @@ app.use(
 				if (!authToken) return { user: null }
 
 				const user = await validateToken(req)
-				return { user }
+				return { user, authToken }
 			} catch (error) {
 				console.error('Authentication error:', error.message)
 				throw new Error('Authentication failed')
