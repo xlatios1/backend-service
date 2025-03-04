@@ -4,18 +4,39 @@
 export async function up(queryInterface, Sequelize) {
 	const strawberryDatas = [
 		{
-			// id: 1,
 			count: 3,
 			user_id: 1000,
+			comments: 'testing user1 first comment',
+			created_at: new Date(),
+			updated_at: new Date(),
 		},
 		{
-			// id: 1,
 			count: -1,
 			user_id: 1000,
+			comments: 'testing user1 second comment',
+			created_at: new Date(),
+			updated_at: new Date(),
+		},
+		{
+			count: 3,
+			user_id: 1001,
+			comments: 'testing user2 first comment',
+			created_at: new Date(),
+			updated_at: new Date(),
+		},
+		{
+			count: -1,
+			user_id: 1001,
+			comments: 'testing user2 second comment',
+			created_at: new Date(),
+			updated_at: new Date(),
 		},
 	]
 	await queryInterface.bulkInsert('strawberries', strawberryDatas)
 }
 export async function down(queryInterface, Sequelize) {
-	await queryInterface.bulkDelete('strawberries', { user_id: 1000 })
+	const Op = Sequelize.Op
+	await queryInterface.bulkDelete('strawberries', {
+		user_id: { [Op.in]: [1000, 1001] },
+	})
 }

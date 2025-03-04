@@ -41,19 +41,20 @@ export class StrawberryService {
 		}
 	}
 
-	async addStrawberry(userId: number, count: number) {
+	async addStrawberryById(userId: number, count: number, comments?: string) {
 		try {
 			const res = (
 				await StrawberryDBModel.create({
 					userId,
 					count,
+					comments,
 				})
 			).get({ plain: true })
 
-			return await this.getAllStrawberryById(userId)
+			return await this.getAllStrawberry()
 		} catch (e) {
 			throw new Error(
-				`An error occurred while adding a new strawberry. Error: ${e}`
+				`An error occurred while adding a new strawberry for ${userId}. Error: ${e}`
 			)
 		}
 	}

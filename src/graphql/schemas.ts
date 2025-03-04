@@ -7,6 +7,7 @@ export const typeDefs = `#graphql
 		id: ID!
 		count: Int!
 		userId: User!
+		comments: String
 		createdAt: String!
 		updatedAt: String!
 	}
@@ -19,6 +20,7 @@ export const typeDefs = `#graphql
 		updatedAt: String!
 	}
 	type AuthResponse {
+		id: ID!
 		username: String!
 		displayName: String!
 		imageUrl: String
@@ -27,13 +29,13 @@ export const typeDefs = `#graphql
 	type Query {
 		getAllStrawberry: [Strawberry!]
 		getStrawberryById: [Strawberry!]
-		addStrawberry(count: Int!): Boolean!
 		checkUserExists: AuthResponse
     }
 	type Mutation{
 		authenticate(username: String!, password: String!, deviceToken: String): AuthResponse! 
 		signup(username: String!, password: String!, displayName: String!, imageUrl: String): AuthResponse!
 		signout: Boolean!
+		addStrawberry(id: ID!, count: Int!, comments: String): [Strawberry!]
 	}
 `
 

@@ -22,6 +22,10 @@ module.exports = {
 					key: 'id',
 				},
 			},
+			comments: {
+				field: 'comments',
+				type: Sequelize.STRING,
+			},
 			createdAt: {
 				allowNull: false,
 				field: 'created_at',

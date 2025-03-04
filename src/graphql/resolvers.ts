@@ -1,4 +1,3 @@
-import { GraphQLError } from 'graphql'
 import { StrawberryService } from '../strawberry/service/strawberry.service'
 import { UserService } from '../users/service/users.service'
 import { UnauthorizedError } from '../errorHandlers/unauthorizedError'
@@ -19,16 +18,6 @@ export const resolvers = {
 			if (!user) throw new UnauthorizedError()
 
 			return await new StrawberryService().getAllStrawberryById(Number(user.id))
-		},
-
-		async addStrawberry(_parent, args, context) {
-			const { user } = context
-			if (!user) throw new UnauthorizedError()
-
-			return await new StrawberryService().addStrawberry(
-				Number(user.id),
-				Number(args.count)
-			)
 		},
 
 		async checkUserExists(_parent, args, context) {
@@ -59,6 +48,16 @@ export const resolvers = {
 			if (!user) throw new UnauthorizedError()
 
 			return await new UserService().logout(Number(user.id))
+		},
+		async addStrawberry(_parent, args, context) {
+			const { user } = context
+			if (!user) throw new UnauthorizedError()
+
+			return await new StrawberryService().addStrawberryById(
+				Number(args.id),
+				Number(args.count),
+				args.comments
+			)
 		},
 	},
 }

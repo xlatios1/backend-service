@@ -36,6 +36,12 @@ export class StrawberryDBModel extends Model<StrawberryType> {
 	@BelongsTo(() => UsersDBModel)
 	User: UsersDBModel
 
+	@Column({
+		field: 'comments',
+		type: DataType.STRING,
+	})
+	comments: string
+
 	@CreatedAt
 	@Column({
 		field: 'created_at',
