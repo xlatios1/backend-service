@@ -5,6 +5,7 @@ export class StrawberryService {
 		try {
 			return await StrawberryDBModel.findAll({
 				raw: true,
+				order: [['createdAt', 'DESC']],
 			})
 		} catch (e) {
 			throw new Error(

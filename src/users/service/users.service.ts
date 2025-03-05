@@ -67,7 +67,6 @@ export class UserService {
 	}
 
 	async checkUserExists(userId: number, deviceToken?: string) {
-		console.log(userId)
 		const user = await UsersDBModel.findOne({
 			where: { id: userId },
 			raw: true,
