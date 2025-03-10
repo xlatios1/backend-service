@@ -1,63 +1,75 @@
+import { withErrorHandling } from '../errorHandlers/errorWrapper'
 import { StrawberryService } from '../strawberry/service/strawberry.service'
 import { UserService } from '../users/service/users.service'
-import { UnauthorizedError } from '../errorHandlers/unauthorizedError'
+import { AuthenticationError } from 'apollo-server-errors'
 
-// Resolvers define how to fetch the types defined in your schema.
-// This resolver retrieves books from the "books" array above.
+const strawberryService = new StrawberryService()
+const userService = new UserService()
+
 export const resolvers = {
 	Query: {
-		async getAllStrawberry(_parent, _args, context) {
+		getAllStrawberry: withErrorHandling(async (_parent, _args, context) => {
 			const { user } = context
-			if (!user) throw new UnauthorizedError()
+			if (!user)
+				throw new AuthenticationError('You must login to access this service!')
 
-			return await new StrawberryService().getAllStrawberry()
-		},
+			return await strawberryService.getAllStrawberry()
+		}),
 
-		async getStrawberryById(_parent, _args, context) {
+		getStrawberryById: withErrorHandling(async (_parent, _args, context) => {
 			const { user } = context
-			if (!user) throw new UnauthorizedError()
+			if (!user)
+				throw new AuthenticationError('You must login to access this service!')
 
-			return await new StrawberryService().getAllStrawberryById(Number(user.id))
-		},
+			return await strawberryService.getAllStrawberryById(Number(user.id))
+		}),
 
-		async checkUserExists(_parent, args, context) {
+		checkUserExists: withErrorHandling(async (_parent, args, context) => {
 			const { user, authToken } = context
-			if (!user) throw new UnauthorizedError()
+			if (!user)
+				throw new AuthenticationError('You must login to access this service!')
 
-			return await new UserService().checkUserExists(Number(user.id), authToken)
-		},
+			return await userService.checkUserExists(Number(user.id), authToken)
+		}),
 	},
+
 	Strawberry: {
-		async userId(parent, args, context) {
-			return await new UserService().getUser(Number(parent.userId))
-		},
+		userId: withErrorHandling(async (parent) => {
+			return await userService.getUser(Number(parent.userId))
+		}),
 	},
+
 	Mutation: {
-		async authenticate(_, args, context, info) {
-			return await new UserService().authenticate(
+		authenticate: withErrorHandling(async (_, args) => {
+			return await userService.authenticate(
 				args.username,
 				args.password,
 				args.deviceToken
 			)
-		},
-		async signup(_, args, context) {
-			return await new UserService().createUser(args)
-		},
-		async signout(_, args, context) {
-			const { user } = context
-			if (!user) throw new UnauthorizedError()
+		}),
 
-			return await new UserService().logout(Number(user.id))
-		},
-		async addStrawberry(_parent, args, context) {
-			const { user } = context
-			if (!user) throw new UnauthorizedError()
+		signup: withErrorHandling(async (_, args) => {
+			return await userService.createUser(args)
+		}),
 
-			return await new StrawberryService().addStrawberryById(
+		signout: withErrorHandling(async (_, _args, context) => {
+			const { user } = context
+			if (!user)
+				throw new AuthenticationError('You must login to access this service!')
+
+			return await userService.logout(Number(user.id))
+		}),
+
+		addStrawberry: withErrorHandling(async (_parent, args, context) => {
+			const { user } = context
+			if (!user)
+				throw new AuthenticationError('You must login to access this service!')
+
+			return await strawberryService.addStrawberryById(
 				Number(args.id),
 				Number(args.count),
 				args.comments
 			)
-		},
+		}),
 	},
 }
