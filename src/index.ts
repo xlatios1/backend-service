@@ -7,6 +7,9 @@ import { DB } from './database'
 import { validateToken } from './middleware/validateToken'
 import { typeDefs } from './graphql/schemas'
 import { resolvers } from './graphql/resolvers'
+import { withErrorHandling } from './errorHandlers/errorWrapper'
+import { ApolloServerErrorCode } from '@apollo/server/errors'
+import { ApolloError } from 'apollo-server-errors'
 
 dotenv.config()
 const app = express()
@@ -15,6 +18,24 @@ const apolloServer = new ApolloServer({
 	resolvers,
 	typeDefs,
 	introspection: true, //process.env.NODE_ENV !== 'production',
+	formatError: (err) => {
+		if (
+			err.extensions.code === ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED
+		) {
+			return {
+				...err,
+				message: "Your query doesn't match the schema. Try double-checking it!",
+			}
+		}
+		if (err instanceof ApolloError) {
+			return {
+				message: err.message,
+				code: err.extensions.code,
+				details: err.extensions.exception || null,
+			}
+		}
+		return err
+	},
 })
 
 await apolloServer.start()
@@ -24,18 +45,13 @@ app.use(
 	cors(),
 	express.json(),
 	expressMiddleware(apolloServer, {
-		context: async ({ req }) => {
-			try {
-				const authToken = req.headers.authorization
-				if (!authToken) return { user: null }
+		context: withErrorHandling(async ({ req }) => {
+			const authToken = req.headers.authorization
+			if (!authToken) return { user: null }
 
-				const user = await validateToken(req)
-				return { user, authToken }
-			} catch (error) {
-				console.error('Authentication error:', error.message)
-				throw new Error('Authentication failed')
-			}
-		},
+			const user = await validateToken(req)
+			return { user, authToken }
+		}),
 	})
 )
 

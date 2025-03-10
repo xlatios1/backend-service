@@ -1,35 +1,24 @@
-import { NotFoundError, UnauthorizedError } from 'routing-controllers'
-import { ApolloError } from 'apollo-server-errors'
+import { AuthenticationError } from 'apollo-server-errors'
 import { AuthResponse } from '../dto/auth-response.dto'
 import { UserDevicesDBModel } from '../models/users-devices.model'
 import { UsersDBModel } from '../models/users.model'
 import bcrypt from 'bcrypt'
 import { UserDataType } from '../types/users.type'
 import jwt from 'jsonwebtoken'
+import { NotFoundError } from '../../errorHandlers/NotFoundError'
 
 export class UserService {
 	async getUser(id: number) {
-		try {
-			const user = await UsersDBModel.findOne({
-				where: { id },
-				raw: true,
-			})
-			if (!user) {
-				throw new NotFoundError('User does not exist!')
-			}
-			return { ...user, password: undefined }
-		} catch (e) {
-			const errorMessage = `An error occurred while getting the user. Error: ${
-				e.message || e
-			}`
+		const user = await UsersDBModel.findOne({
+			where: { id },
+			raw: true,
+		})
 
-			if (e instanceof NotFoundError) {
-				throw new ApolloError(errorMessage, 'USER_NOT_FOUND')
-			}
-
-			// For any other error, wrap it in a generic ApolloError
-			throw new ApolloError(errorMessage, 'INTERNAL_SERVER_ERROR')
+		if (!user) {
+			throw new NotFoundError(`User with ID ${id} not found`, { id })
 		}
+
+		return { ...user, password: undefined }
 	}
 
 	/**
@@ -43,27 +32,23 @@ export class UserService {
 		password: string,
 		deviceToken?: string
 	): Promise<AuthResponse> {
-		try {
-			const user = await UsersDBModel.findOne({
-				where: { username },
-				raw: true,
+		const user = await UsersDBModel.findOne({
+			where: { username },
+			raw: true,
+		})
+		if (!user) {
+			throw new NotFoundError(`User with username ${username} not found`, {
+				username,
 			})
-			if (!user) {
-				throw new UnauthorizedError('Invalid Credentials')
-			}
-
-			const passwordIsValid = bcrypt.compareSync(password, user.password)
-
-			if (!passwordIsValid) {
-				throw new UnauthorizedError('Invalid Credentials')
-			}
-
-			return await this.generateAuthResponse(user, deviceToken)
-		} catch (error) {
-			throw new Error(
-				`An error occurred while getting the user. Error: ${error}`
-			)
 		}
+
+		const passwordIsValid = bcrypt.compareSync(password, user.password)
+
+		if (!passwordIsValid) {
+			throw new AuthenticationError('Invalid Credentials')
+		}
+
+		return await this.generateAuthResponse(user, deviceToken)
 	}
 
 	async checkUserExists(userId: number, deviceToken?: string) {
@@ -77,25 +62,14 @@ export class UserService {
 	}
 
 	private async generateAuthResponse(user: UsersDBModel, deviceToken?: string) {
-		try {
-			if (!deviceToken) {
-				deviceToken = this.generateToken(user)
+		if (!deviceToken) {
+			deviceToken = this.generateToken(user)
 
-				const res = await UserDevicesDBModel.create({
-					userId: user.id,
-					deviceToken,
-				})
-
-				if (!res) {
-					throw new Error('Failed to create user devices')
-				}
-			}
-		} catch (error) {
-			throw new Error(
-				`An error occurred while creating user devices. Error: ${error}`
-			)
+			const res = await UserDevicesDBModel.create({
+				userId: user.id,
+				deviceToken,
+			})
 		}
-
 		return new AuthResponse(user, deviceToken)
 	}
 
@@ -112,37 +86,29 @@ export class UserService {
 	}
 
 	async logout(userId: number): Promise<Boolean> {
-		try {
-			const rowsDeleted = await UserDevicesDBModel.destroy({
-				where: { userId },
-				logging: console.log,
+		const rowsDeleted = await UserDevicesDBModel.destroy({
+			where: { userId },
+			logging: console.log,
+		})
+		if (!rowsDeleted) {
+			throw new NotFoundError(`User with id '${userId}' not found`, {
+				userId,
 			})
-			if (!rowsDeleted) {
-				throw new NotFoundError('User not found')
-			}
-			return !!rowsDeleted
-		} catch (error) {
-			throw new Error(
-				`An error occurred while logging out the user. Error: ${error}`
-			)
 		}
+		return !!rowsDeleted
 	}
 
 	public async createUser(userData: UserDataType) {
-		try {
-			const newUser = await UsersDBModel.create(
-				{
-					username: userData.username,
-					password: this.generateHashedPassword(userData.password),
-					displayName: userData.displayName,
-				},
-				{ raw: true }
-			)
+		const newUser = await UsersDBModel.create(
+			{
+				username: userData.username,
+				password: this.generateHashedPassword(userData.password),
+				displayName: userData.displayName,
+			},
+			{ raw: true }
+		)
 
-			return await this.generateAuthResponse(newUser)
-		} catch (err) {
-			throw new Error(`Unable to create user. Error: ${err}`)
-		}
+		return await this.generateAuthResponse(newUser)
 	}
 
 	private generateHashedPassword(password: string): string {

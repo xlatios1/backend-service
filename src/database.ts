@@ -1,4 +1,5 @@
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript'
+import { ApolloError } from 'apollo-server-errors'
 import dbConfig from '../config/config'
 import { models } from './models'
 
@@ -46,6 +47,6 @@ export const DB = {
 		if (sequelize) {
 			return sequelize
 		}
-		throw new Error('Database not initialised.')
+		throw new ApolloError('Database not initialised.', 'INTERNAL_SERVER_ERROR')
 	},
 }
