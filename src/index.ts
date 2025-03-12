@@ -7,9 +7,7 @@ import { DB } from './database'
 import { validateToken } from './middleware/validateToken'
 import { typeDefs } from './graphql/schemas'
 import { resolvers } from './graphql/resolvers'
-import { withErrorHandling } from './errorHandlers/errorWrapper'
 import { ApolloServerErrorCode } from '@apollo/server/errors'
-import { ApolloError } from 'apollo-server-errors'
 
 dotenv.config()
 const app = express()
@@ -27,13 +25,16 @@ const apolloServer = new ApolloServer({
 				message: "Your query doesn't match the schema. Try double-checking it!",
 			}
 		}
-		if (err instanceof ApolloError) {
-			return {
+		if (err.extensions?.code) {
+			const a = {
 				message: err.message,
 				code: err.extensions.code,
-				details: err.extensions.exception || null,
 			}
+			console.log(a)
+			return a
 		}
+
+		console.log('failed to handle error', err)
 		return err
 	},
 })
@@ -45,13 +46,13 @@ app.use(
 	cors(),
 	express.json(),
 	expressMiddleware(apolloServer, {
-		context: withErrorHandling(async ({ req }) => {
+		context: async ({ req }) => {
 			const authToken = req.headers.authorization
 			if (!authToken) return { user: null }
 
 			const user = await validateToken(req)
 			return { user, authToken }
-		}),
+		},
 	})
 )
 

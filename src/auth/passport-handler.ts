@@ -1,7 +1,7 @@
 import passport from 'passport'
 import passportJwt from 'passport-jwt'
 import { UserService } from '../users/service/users.service'
-import { ApolloError, AuthenticationError } from 'apollo-server-errors'
+import { SessionTimeoutError } from '../errorHandlers/SessionTimeoutError'
 
 const JwtStrategy = passportJwt.Strategy
 const ExtractJwt = passportJwt.ExtractJwt
@@ -18,13 +18,13 @@ passport.use(
 			try {
 				// TODO: validate the token structure in run-time
 				if (!decodedToken) {
-					throw new AuthenticationError(invalidTokenMessage)
+					throw new SessionTimeoutError()
 				}
 
-				const userId = decodedToken?.id
-				const username = decodedToken?.username
+				const userId = decodedToken.id
+				const username = decodedToken.username
 				if (!userId || !username) {
-					throw new AuthenticationError(invalidTokenMessage)
+					throw new SessionTimeoutError()
 				}
 
 				new UserService().getUser(Number(userId))
@@ -35,10 +35,7 @@ passport.use(
 				}
 				return done(null, userContext)
 			} catch (error) {
-				if (error instanceof ApolloError) {
-					return done(new AuthenticationError(invalidTokenMessage), false)
-				}
-				return done(error, false)
+				return done(new SessionTimeoutError(), false)
 			}
 		}
 	)

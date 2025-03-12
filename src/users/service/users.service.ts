@@ -37,15 +37,13 @@ export class UserService {
 			raw: true,
 		})
 		if (!user) {
-			throw new NotFoundError(`User with username ${username} not found`, {
-				username,
-			})
+			throw new AuthenticationError('Invalid username/password.')
 		}
 
 		const passwordIsValid = bcrypt.compareSync(password, user.password)
 
 		if (!passwordIsValid) {
-			throw new AuthenticationError('Invalid Credentials')
+			throw new AuthenticationError('Invalid username/password.')
 		}
 
 		return await this.generateAuthResponse(user, deviceToken)
