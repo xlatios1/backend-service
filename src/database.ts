@@ -1,5 +1,5 @@
-import { Sequelize, SequelizeOptions } from 'sequelize-typescript'
 import { ApolloError } from 'apollo-server-errors'
+import { Sequelize, SequelizeOptions } from 'sequelize-typescript'
 import dbConfig from '../config/config'
 import { models } from './models'
 

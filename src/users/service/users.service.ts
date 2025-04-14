@@ -113,4 +113,7 @@ export class UserService {
 		const salt = bcrypt.genSaltSync(10)
 		return bcrypt.hashSync(password, salt)
 	}
+
+	// TODO
+	public async createUserImage(userData: UserDataType) {}
 }

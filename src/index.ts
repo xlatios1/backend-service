@@ -43,7 +43,7 @@ await apolloServer.start()
 
 app.use(
 	'/graphql',
-	cors(),
+	cors({ origin: '*' }),
 	express.json(),
 	expressMiddleware(apolloServer, {
 		context: async ({ req }) => {
@@ -58,7 +58,7 @@ app.use(
 
 const PORT = Number(process.env.PORT)
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
 	console.log(`\nGo to http://localhost:${PORT}/graphql to run queries!`)
 	DB.init()
 })
