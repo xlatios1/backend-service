@@ -1,5 +1,4 @@
 import '../auth/passport-handler'
-import { AuthenticationError } from 'apollo-server-errors'
 
 import passport from 'passport'
 import { NotFoundError } from '../errorHandlers/NotFoundError'
