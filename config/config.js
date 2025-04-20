@@ -11,6 +11,11 @@ export default {
 		dialect: 'postgres',
 		port: process.env.DEVELOPMENT_DB_PORT,
 	},
+	neon: {
+		url: process.env.NEON_URL,
+		dialect: 'postgres',
+		dialectOptions: { ssl: { require: true } },
+	},
 	production: {
 		username: process.env.PROD_DB_USERNAME,
 		password: process.env.PROD_DB_PASSWORD,

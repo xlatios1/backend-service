@@ -1,13 +1,13 @@
-import express from 'express'
-import dotenv from 'dotenv'
-import cors from 'cors'
 import { ApolloServer } from '@apollo/server'
-import { expressMiddleware } from '@apollo/server/express4'
-import { DB } from './database'
-import { validateToken } from './middleware/validateToken'
-import { typeDefs } from './graphql/schemas'
-import { resolvers } from './graphql/resolvers'
 import { ApolloServerErrorCode } from '@apollo/server/errors'
+import { expressMiddleware } from '@apollo/server/express4'
+import cors from 'cors'
+import dotenv from 'dotenv'
+import express from 'express'
+import { DB } from './database'
+import { resolvers } from './graphql/resolvers'
+import { typeDefs } from './graphql/schemas'
+import { validateToken } from './middleware/validateToken'
 
 dotenv.config()
 const app = express()
@@ -26,15 +26,13 @@ const apolloServer = new ApolloServer({
 			}
 		}
 		if (err.extensions?.code) {
-			const a = {
+			return {
 				message: err.message,
 				code: err.extensions.code,
 			}
-			console.log(a)
-			return a
 		}
 
-		console.log('failed to handle error', err)
+		console.log('Failed to handle error. Error:', err)
 		return err
 	},
 })
