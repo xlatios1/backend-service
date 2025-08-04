@@ -1,6 +1,7 @@
 import { ApolloServer } from '@apollo/server'
 import { ApolloServerErrorCode } from '@apollo/server/errors'
-import { expressMiddleware } from '@apollo/server/express4'
+import { expressMiddleware } from '@as-integrations/express5'
+
 import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'

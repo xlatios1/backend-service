@@ -1,11 +1,11 @@
+import { NotFoundError } from '@errors/NotFoundError'
+import { AuthResponse } from '@src/users/dto/auth-response.dto'
+import { UserDevicesDBModel } from '@src/users/models/users-devices.model'
+import { UsersDBModel } from '@src/users/models/users.model'
+import { UserDataType } from '@src/users/types/users.type'
 import { AuthenticationError } from 'apollo-server-errors'
-import { AuthResponse } from '../dto/auth-response.dto'
-import { UserDevicesDBModel } from '../models/users-devices.model'
-import { UsersDBModel } from '../models/users.model'
 import bcrypt from 'bcrypt'
-import { UserDataType } from '../types/users.type'
 import jwt from 'jsonwebtoken'
-import { NotFoundError } from '../../errorHandlers/NotFoundError'
 
 export class UserService {
 	async getUser(id: number) {

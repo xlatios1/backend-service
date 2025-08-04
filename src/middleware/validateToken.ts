@@ -1,7 +1,7 @@
-import '../auth/passport-handler'
+import '@src/auth/passport-handler'
 
+import { NotFoundError } from '@errors/NotFoundError'
 import passport from 'passport'
-import { NotFoundError } from '../errorHandlers/NotFoundError'
 
 // Apollo Context with JWT Validation
 export const validateToken = (req) => {

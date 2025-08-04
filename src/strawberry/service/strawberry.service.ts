@@ -1,4 +1,4 @@
-import { StrawberryDBModel } from '../models/strawberry.model'
+import { StrawberryDBModel } from '@src/strawberry/models/strawberry.model'
 
 export class StrawberryService {
 	async getAllStrawberry() {

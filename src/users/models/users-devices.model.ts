@@ -1,3 +1,5 @@
+import { UsersDBModel } from '@src/users/models/users.model'
+import { UserDeviceType } from '@src/users/types/users-devices.type'
 import {
 	AllowNull,
 	AutoIncrement,
@@ -11,8 +13,6 @@ import {
 	Table,
 	UpdatedAt,
 } from 'sequelize-typescript'
-import { UserDeviceType } from '../types/users-devices.type'
-import { UsersDBModel } from './users.model'
 
 @Table({
 	tableName: 'user_devices',
@@ -21,7 +21,7 @@ export class UserDevicesDBModel extends Model<UserDeviceType> {
 	@PrimaryKey
 	@AutoIncrement
 	@Column(DataType.INTEGER)
-	id: number
+	declare id: number
 
 	@ForeignKey(() => UsersDBModel)
 	@Column({
@@ -47,12 +47,12 @@ export class UserDevicesDBModel extends Model<UserDeviceType> {
 		field: 'created_at',
 		type: DataType.DATE,
 	})
-	public readonly createdAt: Date
+	public declare readonly createdAt: Date
 
 	@UpdatedAt
 	@Column({
 		field: 'updated_at',
 		type: DataType.DATE,
 	})
-	public readonly updatedAt: Date
+	public declare readonly updatedAt: Date
 }

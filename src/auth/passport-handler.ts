@@ -1,7 +1,7 @@
+import { SessionTimeoutError } from '@errors/SessionTimeoutError'
+import { UserService } from '@src/users/service/users.service'
 import passport from 'passport'
 import passportJwt from 'passport-jwt'
-import { UserService } from '../users/service/users.service'
-import { SessionTimeoutError } from '../errorHandlers/SessionTimeoutError'
 
 const JwtStrategy = passportJwt.Strategy
 const ExtractJwt = passportJwt.ExtractJwt

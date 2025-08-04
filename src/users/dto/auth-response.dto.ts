@@ -1,5 +1,5 @@
+import { UsersDBModel } from '@src/users/models/users.model'
 import { IsNumber, IsOptional, IsString } from 'class-validator'
-import { UsersDBModel } from '../models/users.model'
 
 export class AuthResponse {
 	constructor(user: UsersDBModel, token?: string) {

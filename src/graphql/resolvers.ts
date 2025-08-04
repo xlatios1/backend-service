@@ -1,6 +1,6 @@
-import { StrawberryService } from '../strawberry/service/strawberry.service'
-import { UserService } from '../users/service/users.service'
-import { ForbiddenError } from 'apollo-server-errors'
+import { ForbiddenError } from '@errors/ForbiddenError'
+import { StrawberryService } from '@src/strawberry/service/strawberry.service'
+import { UserService } from '@src/users/service/users.service'
 
 const strawberryService = new StrawberryService()
 const userService = new UserService()

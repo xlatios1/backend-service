@@ -1,4 +1,4 @@
-import { StrawberryType } from '../../strawberry/types/strawberry.type'
+import { StrawberryType } from '@src/strawberry/types/strawberry.type'
 
 export interface UsersType {
 	id: number

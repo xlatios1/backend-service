@@ -1,3 +1,5 @@
+import { StrawberryType } from '@src/strawberry/types/strawberry.type'
+import { UsersDBModel } from '@src/users/models/users.model'
 import {
 	AllowNull,
 	AutoIncrement,
@@ -11,15 +13,13 @@ import {
 	Table,
 	UpdatedAt,
 } from 'sequelize-typescript'
-import { UsersDBModel } from '../../users/models/users.model'
-import { StrawberryType } from '../types/strawberry.type'
 
 @Table({ tableName: 'strawberries' })
 export class StrawberryDBModel extends Model<StrawberryType> {
 	@PrimaryKey
 	@AutoIncrement
 	@Column(DataType.INTEGER)
-	id: number
+	declare id: number
 
 	@AllowNull(false)
 	@Column(DataType.INTEGER)
@@ -47,12 +47,12 @@ export class StrawberryDBModel extends Model<StrawberryType> {
 		field: 'created_at',
 		type: DataType.DATE,
 	})
-	public readonly createdAt: Date
+	public declare readonly createdAt: Date
 
 	@UpdatedAt
 	@Column({
 		field: 'updated_at',
 		type: DataType.DATE,
 	})
-	public readonly updatedAt: Date
+	public declare readonly updatedAt: Date
 }

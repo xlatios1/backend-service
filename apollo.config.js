@@ -1,5 +1,5 @@
 module.exports = {
-	client: {
-		service: 'my-graphql-app',
-	},
-}
+  client: {
+    service: "my-graphql-app",
+  },
+};
