@@ -3,7 +3,7 @@ import { ApolloError } from 'apollo-server-errors'
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript'
 import { models } from './models'
 
-const dbConfigs = dbConfig[process.env.NODE_ENV]
+const dbConfigs = dbConfig[process.env.NODE_ENV || 'development']
 
 let sequelize = null
 export const DB = {

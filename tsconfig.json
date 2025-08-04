@@ -14,7 +14,7 @@
 		"forceConsistentCasingInFileNames": false,
 		"sourceMap": true,
 		"allowJs": true,
-		"baseUrl": ".", // Root directory
+		"baseUrl": ".",
 		"paths": {
 			"@src/*": ["src/*"],
 			"@config/*": ["config/*"],

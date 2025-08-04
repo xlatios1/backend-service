@@ -19,7 +19,7 @@ const apolloServer = new ApolloServer({
 	introspection: true, //process.env.NODE_ENV !== 'production',
 	formatError: (err) => {
 		if (
-			err.extensions.code === ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED
+			err.extensions?.code === ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED
 		) {
 			return {
 				...err,
