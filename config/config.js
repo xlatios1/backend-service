@@ -11,6 +11,14 @@ export default {
 		dialect: 'postgres',
 		port: process.env.DEVELOPMENT_DB_PORT,
 	},
+	supabase: {
+		username: process.env.SUPABASE_DB_USERNAME,
+		password: process.env.SUPABASE_DB_PASSWORD,
+		database: process.env.SUPABASE_DB_DATABASE,
+		host: process.env.SUPABASE_HOSTNAME,
+		dialect: 'postgres',
+		port: process.env.SUPABASE_DB_PORT,
+	},
 	neon: {
 		url: process.env.NEON_URL,
 		dialect: 'postgres',

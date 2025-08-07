@@ -30,7 +30,7 @@ export class UserDevicesDBModel extends Model<UserDeviceType> {
 		onDelete: 'CASCADE',
 		onUpdate: 'CASCADE',
 	})
-	userId: number
+	declare userId: number
 
 	@BelongsTo(() => UsersDBModel)
 	user: UsersDBModel
@@ -40,7 +40,7 @@ export class UserDevicesDBModel extends Model<UserDeviceType> {
 		field: 'device_token',
 		type: DataType.STRING,
 	})
-	deviceToken: string
+	declare deviceToken: string
 
 	@CreatedAt
 	@Column({

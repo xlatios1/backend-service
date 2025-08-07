@@ -1,3 +1,4 @@
+import { RecipesDBModel } from '@src/recipe/models/recipe.model'
 import { StrawberryDBModel } from '@src/strawberry/models/strawberry.model'
 import { UsersType } from '@src/users/types/users.type'
 import {
@@ -51,6 +52,9 @@ export class UsersDBModel extends Model<UsersType> {
 
 	@HasMany(() => StrawberryDBModel)
 	Strawberries: StrawberryDBModel
+
+	@HasMany(() => RecipesDBModel)
+	recipes: RecipesDBModel
 
 	@CreatedAt
 	@Column({

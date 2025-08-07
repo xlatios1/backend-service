@@ -11,7 +11,7 @@ export const validateToken = (req) => {
 				return reject(err)
 			}
 			if (!user) {
-				throw new NotFoundError('User not found!')
+				throw new NotFoundError('Authentication failed! Please try again.')
 			}
 			resolve(user)
 		})(req)

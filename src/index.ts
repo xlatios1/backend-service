@@ -1,13 +1,14 @@
 import { ApolloServer } from '@apollo/server'
 import { ApolloServerErrorCode } from '@apollo/server/errors'
 import { expressMiddleware } from '@as-integrations/express5'
+import depthLimit from 'graphql-depth-limit'
 
 import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
 import { DB } from './database'
-import { resolvers } from './graphql/resolvers'
-import { typeDefs } from './graphql/schemas'
+
+import { resolvers, typeDefs } from './graphql'
 import { validateToken } from './middleware/validateToken'
 
 dotenv.config()
@@ -17,6 +18,7 @@ const apolloServer = new ApolloServer({
 	resolvers,
 	typeDefs,
 	introspection: true, //process.env.NODE_ENV !== 'production',
+	validationRules: [depthLimit(5)],
 	formatError: (err) => {
 		if (
 			err.extensions?.code === ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED
