@@ -9,7 +9,7 @@ export default async function transaction<T>(
 	try {
 		const result = await callback(t)
 		await t.commit()
-		console.log(result)
+
 		return result
 	} catch (error) {
 		await t.rollback()

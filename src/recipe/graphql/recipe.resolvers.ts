@@ -14,7 +14,7 @@ export const recipeResolvers = {
 
 			const { first, after } = args
 			const afterId = after ? decodeCursor(after) : 0
-			console.log('after ', after)
+
 			return recipeService.getRecipes(first, afterId)
 		},
 		getInstructions: async (_parent, args, { user }) => {
@@ -39,7 +39,7 @@ export const recipeResolvers = {
 
 		instructions: async (parent, _args, { user }) => {
 			if (!user) throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE)
-			console.log('HERE', parent)
+
 			return recipeService.getInstructionsById(Number(parent.id))
 		},
 	},
