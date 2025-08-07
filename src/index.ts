@@ -35,7 +35,7 @@ const apolloServer = new ApolloServer({
 			}
 		}
 
-		console.log('Failed to handle error. Error:', err)
+		console.log('Failed to handle error. Error: ', err)
 		return err
 	},
 })
