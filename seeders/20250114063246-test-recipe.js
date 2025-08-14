@@ -11,6 +11,8 @@ export async function up(queryInterface, Sequelize) {
 			image_url:
 				'https://girlheartfood.com/wp-content/uploads/2019/06/Crispy-Fish-Burger-Recipe-8-Tall.jpg',
 			created_by: 1000,
+			created_at: new Date(),
+			updated_at: new Date(),
 		},
 		{
 			// id: 2,
@@ -20,6 +22,8 @@ export async function up(queryInterface, Sequelize) {
 			image_url:
 				'https://cdn.apartmenttherapy.info/image/upload/f_auto,q_auto:eco,c_fill,g_auto,w_1456,h_1092/k%2FPhoto%2FRecipes%2F2023-12-kimchi-fried-rice%2Fkimchi-fried-rice-183-horizontal',
 			created_by: 1001,
+			created_at: new Date(),
+			updated_at: new Date(),
 		},
 	]
 	await queryInterface.bulkInsert('recipes', recipes)

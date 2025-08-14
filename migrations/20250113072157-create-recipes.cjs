@@ -16,11 +16,11 @@ module.exports = {
 			},
 			description: {
 				field: 'description',
-				type: Sequelize.STRING,
+				type: Sequelize.TEXT,
 			},
 			note: {
 				field: 'note',
-				type: Sequelize.STRING,
+				type: Sequelize.TEXT,
 			},
 			imageUrl: {
 				field: 'image_url',

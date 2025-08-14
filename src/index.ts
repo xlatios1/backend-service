@@ -60,6 +60,6 @@ app.use(
 const PORT = Number(process.env.PORT)
 
 app.listen(PORT, '0.0.0.0', () => {
-	console.log(`\nGo to http://localhost:${PORT}/graphql to run queries!`)
+	console.log(`\nGo to ${process.env.BACKEND_URL}/graphql to run queries!`)
 	DB.init()
 })

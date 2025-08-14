@@ -1,4 +1,4 @@
-import { AddInstructionType, UpdateInstructionType } from './instructions.type'
+import { AddInstructionType } from './instructions.type'
 
 export interface RecipeType {
 	id: number
@@ -17,14 +17,15 @@ export interface AddRecipeType {
 	note?: string
 	imageUrl?: string
 	createdBy: number
+	tags: string[]
 	steps: AddInstructionType[]
 }
 
 export interface UpdateRecipeType {
-	id: number
-	recipeName: string
+	recipeName?: string
 	description?: string
 	note?: string
 	imageUrl?: string
-	steps: UpdateInstructionType[]
+	tags?: number[]
+	steps?: AddInstructionType[]
 }

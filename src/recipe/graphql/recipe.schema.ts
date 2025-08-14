@@ -1,12 +1,11 @@
 export const recipeTypeDefs = `#graphql
     type Query {
-        getRecipes(first: Int = 10, after: String = 0): RecipeConnection!
         getInstructions(recipeId: ID!): [Instruction!]!
     }
 
     type Mutation {
-        addRecipe(recipe: AddRecipeInput!): Recipe!
-        updateRecipe(recipe: UpdateRecipeInput!): Boolean!
+        addRecipe(recipe: AddRecipeInput!): Boolean!
+        updateRecipe(id: ID!, recipe: UpdateRecipeInput!): Boolean!
         deleteRecipe(id: ID!): Boolean!
     }
 
@@ -34,14 +33,23 @@ export const recipeTypeDefs = `#graphql
         createdBy: User!
         createdAt: String!
         updatedAt: String!
+        tags: [Tag]!
         instructions: [Instruction!]!
     }
 
     type Instruction {
         id: ID!
-        item: String!
+        item: String
         description: String
+        imageUrl: String
         order: Int!
+    }
+
+    type Tag {
+        id: ID!
+        tag: String!
+        createdAt: String!
+        updatedAt: String!
     }
 
     input AddRecipeInput {
@@ -50,27 +58,22 @@ export const recipeTypeDefs = `#graphql
         note: String
         imageUrl: String
         createdBy: Int!
+        tags: [ID!]!
         steps: [AddInstructionInput!]!
     }
 
     input AddInstructionInput {
-        item: String!
+        item: String
         description: String
         order: Int!
     }
 
     input UpdateRecipeInput {
-        id: ID!
-        recipeName: String!
+        recipeName: String
         description: String
         note: String
         imageUrl: String
-        steps: [UpdateInstructionInput!]
-    }
-
-    input UpdateInstructionInput {
-        item: String!
-        description: String
-        order: Int!
+        tags: [ID!]
+        steps: [AddInstructionInput!]
     }
 `
