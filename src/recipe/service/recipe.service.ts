@@ -1,17 +1,33 @@
 import { NotFoundError } from '@src/errorHandlers/NotFoundError'
 import { RecipesDBModel } from '@src/recipe/models/recipe.model'
+import { TagsService } from '@src/tags/service/tags.service'
 import { encodeCursor } from '@src/utils/cursor'
 import transaction from '@src/utils/transactions'
 import { Op } from 'sequelize'
-import { InstructionsDBModel } from '../models/instructions.model'
-import { AddRecipeType, UpdateRecipeType } from '../types/recipe.model'
+import { RecipeTagsDBModel } from '../models/recipeTags.model'
+import { AddRecipeType, UpdateRecipeType } from '../types/recipe.type'
+import { InstructionsService } from './instructions.service'
 
 export class RecipeService {
-	async getRecipes(first: number, afterId: number) {
-		const recipes = await RecipesDBModel.findAll({
-			where: { id: { [Op.gt]: afterId } },
-			order: [['id', 'ASC']],
+	private instructionsService = new InstructionsService()
+	private tagsService = new TagsService()
+
+	async getRecipesByTagId(
+		tagId: string,
+		first: number = 10,
+		afterId: number = 0
+	) {
+		const taggedRecipes = await RecipeTagsDBModel.findAll({
+			attributes: ['recipeId'],
+			where: { tagId, recipeId: { [Op.gt]: afterId } },
+			order: [['recipeId', 'ASC']],
 			limit: first,
+			raw: true,
+		})
+
+		const recipes = await RecipesDBModel.findAll({
+			where: { id: { [Op.in]: taggedRecipes.map((r) => r.recipeId) } },
+			order: [['id', 'ASC']],
 			raw: true,
 		})
 
@@ -36,33 +52,31 @@ export class RecipeService {
 		}
 	}
 
-	async getInstructionsById(recipeId: number) {
-		const instructions = await InstructionsDBModel.findAll({
-			where: { recipeId },
-			order: [['order', 'ASC']],
-			raw: true,
-		})
-
-		if (!instructions) {
-			throw new NotFoundError(
-				`Recipe instructions with ID ${recipeId} not found`,
-				{
-					recipeId,
-				}
-			)
-		}
-
-		return instructions
-	}
-
 	async addRecipe({
 		recipeName,
 		description,
 		note,
 		imageUrl,
 		createdBy,
+		tags,
 		steps,
 	}: AddRecipeType) {
+		if (!tags.length || !steps.length) {
+			throw new NotFoundError('Recipe must have tags and steps')
+		}
+
+		const tagIds = tags.map((t) => Number(t))
+
+		const existingTags = await this.tagsService.getTagsByIds(tagIds)
+
+		const tagsNotFound = existingTags.filter((t) => !tagIds.includes(t.id))
+
+		if (tagsNotFound.length) {
+			throw new NotFoundError(
+				`Tags ${tagsNotFound.map((t) => t.tag)} not found`
+			)
+		}
+
 		return await transaction(async (transaction) => {
 			const recipe = await RecipesDBModel.create(
 				{
@@ -75,50 +89,56 @@ export class RecipeService {
 				{ transaction }
 			)
 
-			const instructions = steps.map((step) => ({
-				...step,
+			const recipeTags = tagIds.map((tagId) => ({
 				recipeId: recipe.id,
+				tagId,
 			}))
 
-			await InstructionsDBModel.bulkCreate(instructions, { transaction })
+			await this.tagsService.addRecipeTags(recipeTags, transaction)
 
-			return recipe
+			await this.instructionsService.addInstructions(
+				recipe.id,
+				steps,
+				transaction
+			)
+
+			return true
 		})
 	}
 
-	async updateRecipe({
-		id,
-		recipeName,
-		description,
-		note,
-		imageUrl,
-		steps,
-	}: UpdateRecipeType) {
+	async updateRecipe(
+		id: string,
+		{ recipeName, description, note, imageUrl, tags, steps }: UpdateRecipeType
+	) {
 		return await transaction(async (transaction) => {
+			const fieldsToUpdate: Partial<UpdateRecipeType> = {}
+			if (recipeName) fieldsToUpdate.recipeName = recipeName
+			if (description) fieldsToUpdate.description = description
+			if (note) fieldsToUpdate.note = note
+			if (imageUrl) fieldsToUpdate.imageUrl = imageUrl
+
 			await RecipesDBModel.update(
-				{
-					recipeName,
-					description,
-					note,
-					imageUrl,
-				},
+				{ ...fieldsToUpdate },
 				{
 					where: { id },
 					transaction,
 				}
 			)
 
-			await InstructionsDBModel.destroy({
-				where: { recipeId: id },
-				transaction,
-			})
+			if (steps) {
+				await this.instructionsService.updateInstructions(
+					Number(id),
+					steps,
+					transaction
+				)
+			}
 
-			const instructions = steps.map((step) => ({
-				...step,
-				recipeId: id,
-			}))
-
-			await InstructionsDBModel.bulkCreate(instructions, { transaction })
+			if (tags) {
+				await this.tagsService.updateRecipeTags(
+					{ recipeId: Number(id), tagIds: tags },
+					transaction
+				)
+			}
 
 			return true
 		})
@@ -126,10 +146,8 @@ export class RecipeService {
 
 	async deleteRecipe(id: number) {
 		return await transaction(async (transaction) => {
-			await InstructionsDBModel.destroy({
-				where: { recipeId: id },
-				transaction,
-			})
+			await this.instructionsService.deleteInstructions(id, transaction)
+			await this.tagsService.deleteRecipeTags(id, transaction)
 
 			await RecipesDBModel.destroy({
 				where: { id },

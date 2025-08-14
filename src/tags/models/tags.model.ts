@@ -1,48 +1,37 @@
 import {
 	AllowNull,
 	AutoIncrement,
-	BelongsTo,
+	BelongsToMany,
 	Column,
 	CreatedAt,
 	DataType,
-	ForeignKey,
 	Model,
 	PrimaryKey,
 	Table,
+	Unique,
 	UpdatedAt,
 } from 'sequelize-typescript'
-import { InstructionsType } from '../types/instructions.type'
-import { RecipesDBModel } from './recipe.model'
+import { RecipesDBModel } from '../../recipe/models/recipe.model'
+import { RecipeTagsDBModel } from '../../recipe/models/recipeTags.model'
+import { TagsType } from '../types/tags.type'
 
-@Table({ tableName: 'instructions' })
-export class InstructionsDBModel extends Model<InstructionsType> {
+@Table({ tableName: 'tags' })
+export class TagsDBModel extends Model<TagsType> {
 	@PrimaryKey
 	@AutoIncrement
 	@Column(DataType.INTEGER)
 	declare id: number
 
 	@AllowNull(false)
-	@ForeignKey(() => RecipesDBModel)
+	@Unique
 	@Column({
-		field: 'recipe_id',
-		type: DataType.INTEGER,
-	})
-	declare recipeId: number
-
-	@BelongsTo(() => RecipesDBModel)
-	recipe: RecipesDBModel
-
-	@Column(DataType.STRING)
-	declare item: string
-
-	@Column(DataType.TEXT)
-	declare description: string
-
-	@Column({
-		field: 'image_url',
+		field: 'tag',
 		type: DataType.STRING,
 	})
-	declare imageUrl: string
+	declare tag: string
+
+	@BelongsToMany(() => RecipesDBModel, () => RecipeTagsDBModel)
+	recipes: RecipesDBModel[]
 
 	@AllowNull(false)
 	@Column(DataType.INTEGER)

@@ -1,9 +1,10 @@
-import { RecipeType } from '@src/recipe/types/recipe.model'
+import { RecipeType } from '@src/recipe/types/recipe.type'
 import { UsersDBModel } from '@src/users/models/users.model'
 import {
 	AllowNull,
 	AutoIncrement,
 	BelongsTo,
+	BelongsToMany,
 	Column,
 	CreatedAt,
 	DataType,
@@ -14,7 +15,9 @@ import {
 	Table,
 	UpdatedAt,
 } from 'sequelize-typescript'
+import { TagsDBModel } from '../../tags/models/tags.model'
 import { InstructionsDBModel } from './instructions.model'
+import { RecipeTagsDBModel } from './recipeTags.model'
 
 @Table({ tableName: 'recipes' })
 export class RecipesDBModel extends Model<RecipeType> {
@@ -24,7 +27,10 @@ export class RecipesDBModel extends Model<RecipeType> {
 	declare id: number
 
 	@HasMany(() => InstructionsDBModel)
-	Instructions: InstructionsDBModel
+	instructions: InstructionsDBModel
+
+	@BelongsToMany(() => TagsDBModel, () => RecipeTagsDBModel)
+	tags: TagsDBModel[]
 
 	@AllowNull(false)
 	@Column({
@@ -33,10 +39,10 @@ export class RecipesDBModel extends Model<RecipeType> {
 	})
 	declare recipeName: string
 
-	@Column(DataType.STRING)
+	@Column(DataType.TEXT)
 	declare description: string
 
-	@Column(DataType.STRING)
+	@Column(DataType.TEXT)
 	declare note: string
 
 	@Column({

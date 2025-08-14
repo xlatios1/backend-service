@@ -1,27 +1,22 @@
 import { ForbiddenError } from '@errors/ForbiddenError'
 import { FORBIDDEN_ERROR_MESSAGE } from '@src/constants/constants'
 import { RecipeService } from '@src/recipe/service/recipe.service'
+import { TagsService } from '@src/tags/service/tags.service'
 import { UserService } from '@src/users/service/users.service'
-import { decodeCursor } from '@src/utils/cursor'
+import { InstructionsService } from '../service/instructions.service'
 
 const recipeService = new RecipeService()
+const instructionService = new InstructionsService()
 const userService = new UserService()
+const tagsService = new TagsService()
 
 export const recipeResolvers = {
 	Query: {
-		getRecipes: async (_parent, args, { user }) => {
-			if (!user) throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE)
-
-			const { first, after } = args
-			const afterId = after ? decodeCursor(after) : 0
-
-			return recipeService.getRecipes(first, afterId)
-		},
 		getInstructions: async (_parent, args, { user }) => {
 			if (!user) throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE)
 
 			const { recipeId } = args
-			return recipeService.getInstructionsById(Number(recipeId))
+			return instructionService.getInstructionsById(Number(recipeId))
 		},
 	},
 
@@ -29,18 +24,19 @@ export const recipeResolvers = {
 		createdBy: async (parent, _args, { user }) => {
 			if (!user) throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE)
 
-			// assertResourceOwner({
-			// 	currentUserId: Number(user.id),
-			// 	resourceOwnerId: Number(parent.userId),
-			// })
-
 			return userService.getUser(Number(parent.createdBy))
+		},
+
+		tags: async (parent, _args, { user }) => {
+			if (!user) throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE)
+
+			return tagsService.getTagsByRecipeId(Number(parent.id))
 		},
 
 		instructions: async (parent, _args, { user }) => {
 			if (!user) throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE)
 
-			return recipeService.getInstructionsById(Number(parent.id))
+			return instructionService.getInstructionsById(Number(parent.id))
 		},
 	},
 
@@ -55,8 +51,8 @@ export const recipeResolvers = {
 		updateRecipe: async (_parent, args, { user }) => {
 			if (!user) throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE)
 
-			const { recipe } = args
-			return recipeService.updateRecipe(recipe)
+			const { id, recipe } = args
+			return recipeService.updateRecipe(id, recipe)
 		},
 
 		deleteRecipe: async (_parent, args, { user }) => {
