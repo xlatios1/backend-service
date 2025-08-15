@@ -52,6 +52,19 @@ export class RecipeService {
 		}
 	}
 
+	async getRecipeById(id: number) {
+		const recipe = await RecipesDBModel.findOne({
+			where: { id },
+			raw: true,
+		})
+
+		if (!recipe) {
+			throw new NotFoundError(`Recipe with ID ${id} not found`)
+		}
+
+		return recipe
+	}
+
 	async addRecipe({
 		recipeName,
 		description,
@@ -59,10 +72,10 @@ export class RecipeService {
 		imageUrl,
 		createdBy,
 		tags,
-		steps,
+		instructions,
 	}: AddRecipeType) {
-		if (!tags.length || !steps.length) {
-			throw new NotFoundError('Recipe must have tags and steps')
+		if (!tags.length || !instructions.length) {
+			throw new NotFoundError('Recipe must have tags and instructions')
 		}
 
 		const tagIds = tags.map((t) => Number(t))
@@ -98,7 +111,7 @@ export class RecipeService {
 
 			await this.instructionsService.addInstructions(
 				recipe.id,
-				steps,
+				instructions,
 				transaction
 			)
 
@@ -108,8 +121,17 @@ export class RecipeService {
 
 	async updateRecipe(
 		id: string,
-		{ recipeName, description, note, imageUrl, tags, steps }: UpdateRecipeType
+		{
+			recipeName,
+			description,
+			note,
+			imageUrl,
+			tags,
+			instructions,
+		}: UpdateRecipeType
 	) {
+		await this.getRecipeById(Number(id))
+
 		return await transaction(async (transaction) => {
 			const fieldsToUpdate: Partial<UpdateRecipeType> = {}
 			if (recipeName) fieldsToUpdate.recipeName = recipeName
@@ -125,10 +147,10 @@ export class RecipeService {
 				}
 			)
 
-			if (steps) {
+			if (instructions) {
 				await this.instructionsService.updateInstructions(
 					Number(id),
-					steps,
+					instructions,
 					transaction
 				)
 			}
@@ -145,6 +167,8 @@ export class RecipeService {
 	}
 
 	async deleteRecipe(id: number) {
+		await this.getRecipeById(Number(id))
+
 		return await transaction(async (transaction) => {
 			await this.instructionsService.deleteInstructions(id, transaction)
 			await this.tagsService.deleteRecipeTags(id, transaction)

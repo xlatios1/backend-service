@@ -59,7 +59,7 @@ export const recipeTypeDefs = `#graphql
         imageUrl: String
         createdBy: Int!
         tags: [ID!]!
-        steps: [AddInstructionInput!]!
+        instructions: [AddInstructionInput!]!
     }
 
     input AddInstructionInput {
@@ -74,6 +74,6 @@ export const recipeTypeDefs = `#graphql
         note: String
         imageUrl: String
         tags: [ID!]
-        steps: [AddInstructionInput!]
+        instructions: [AddInstructionInput!]
     }
 `

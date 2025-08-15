@@ -5,7 +5,7 @@ export const tagsTypeDefs = `#graphql
     }
 
     type Mutation {
-        addTag(tag: AddTagInput!): Boolean!
+        addTag(tag: AddTagInput!): Tag!
         updateTags(updates: [UpdateTagInput!]!): Boolean!
         deleteTag(id: ID!): Boolean!
     }

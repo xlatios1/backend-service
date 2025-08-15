@@ -18,7 +18,7 @@ export interface AddRecipeType {
 	imageUrl?: string
 	createdBy: number
 	tags: string[]
-	steps: AddInstructionType[]
+	instructions: AddInstructionType[]
 }
 
 export interface UpdateRecipeType {
@@ -27,5 +27,5 @@ export interface UpdateRecipeType {
 	note?: string
 	imageUrl?: string
 	tags?: number[]
-	steps?: AddInstructionType[]
+	instructions?: AddInstructionType[]
 }
