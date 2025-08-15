@@ -48,15 +48,12 @@ export class TagsService {
 			throw new Error(`Tags already exists or order is invalid!`)
 		}
 
-		await TagsDBModel.create(
+		return await TagsDBModel.create(
 			{ ...tag },
 			{
-				order: [['order', 'asc']],
 				raw: true,
 			}
 		)
-
-		return true
 	}
 
 	async addRecipeTags(data: AddRecipeTagType[], t?: Transaction) {

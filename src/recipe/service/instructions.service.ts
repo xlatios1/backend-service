@@ -25,15 +25,15 @@ export class InstructionsService {
 
 	async addInstructions(
 		recipeId: number,
-		steps: AddInstructionType[],
+		instructions: AddInstructionType[],
 		transaction?: Transaction
 	) {
-		const instructions = steps.map((step) => ({
+		const instructionsData = instructions.map((step) => ({
 			...step,
 			recipeId,
 		}))
 
-		return await InstructionsDBModel.bulkCreate(instructions, {
+		return await InstructionsDBModel.bulkCreate(instructionsData, {
 			transaction,
 		})
 	}
