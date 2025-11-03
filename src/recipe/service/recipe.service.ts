@@ -24,6 +24,10 @@ export class RecipeService {
 			limit: first,
 			raw: true,
 		})
+    
+    if (taggedRecipes.length === 0) {
+      return { edges: [], pageInfo: { hasNextPage: false, endCursor: null } }
+    }
 
 		const recipes = await RecipesDBModel.findAll({
 			where: { id: { [Op.in]: taggedRecipes.map((r) => r.recipeId) } },
@@ -36,18 +40,20 @@ export class RecipeService {
 			cursor: encodeCursor(recipe.id),
 		}))
 
-		const last = recipes[recipes.length - 1]
-
-		const hasNextPage = last
-			? (await RecipesDBModel.count({ where: { id: { [Op.gt]: last.id } } })) >
-			  0
-			: false
+    const hasNextPage = taggedRecipes.length === first ? 
+      !!(await RecipeTagsDBModel.findOne({
+        where: {
+          tagId,
+          recipeId: { [Op.gt]: recipes[recipes.length - 1].id },
+        },
+      })) : 
+      false;
 
 		return {
 			edges,
 			pageInfo: {
 				hasNextPage,
-				endCursor: last ? encodeCursor(last.id) : null,
+				endCursor: hasNextPage ? edges[edges.length - 1].cursor : null,
 			},
 		}
 	}
@@ -99,7 +105,7 @@ export class RecipeService {
 					imageUrl,
 					createdBy,
 				},
-				{ transaction }
+				{ raw: true, transaction }
 			)
 
 			const recipeTags = tagIds.map((tagId) => ({
@@ -115,7 +121,10 @@ export class RecipeService {
 				transaction
 			)
 
-			return true
+			return {
+				node: recipe,
+				cursor: encodeCursor(recipe.id),
+			}
 		})
 	}
 

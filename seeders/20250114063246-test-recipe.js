@@ -25,6 +25,17 @@ export async function up(queryInterface, Sequelize) {
 			created_at: new Date(),
 			updated_at: new Date(),
 		},
+		{
+			// id: 3,
+			recipe_name: 'Fried Egg',
+			description: 'This is a fried egg recipe',
+			note: 'Testing note 3',
+			image_url:
+				'https://cdn.apartmenttherapy.info/image/upload/f_auto,q_auto:eco,c_fit,w_730,h_548/k%2FPhoto%2FSeries%2F2024-05-how-to-fry-an-egg%2Fhow-to-fry-an-egg-402-sunny-side-up',
+			created_by: 1001,
+			created_at: new Date(),
+			updated_at: new Date(),
+		},
 	]
 	await queryInterface.bulkInsert('recipes', recipes)
 }

@@ -9,13 +9,13 @@ export const userResolvers = {
 		checkUserExists: async (_parent, args, { user, authToken }) => {
 			if (!user) throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE)
 
-			return userService.checkUserExists(Number(user.id), authToken)
+			return await userService.checkUserExists(Number(user.id), authToken)
 		},
 	},
 
 	Mutation: {
 		authenticate: async (_, args) => {
-			return userService.authenticate(
+			return await userService.authenticate(
 				args.username,
 				args.password,
 				args.deviceToken
@@ -23,13 +23,13 @@ export const userResolvers = {
 		},
 
 		signup: async (_, args) => {
-			return userService.createUser(args)
+      return await userService.createUser(args)
 		},
 
 		signout: async (_, _args, { user }) => {
 			if (!user) throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE)
 
-			return userService.logout(Number(user.id))
+			return await userService.logout(Number(user.id))
 		},
 	},
 }

@@ -4,7 +4,7 @@ export const recipeTypeDefs = `#graphql
     }
 
     type Mutation {
-        addRecipe(recipe: AddRecipeInput!): Boolean!
+        addRecipe(recipe: AddRecipeInput!): RecipeEdge!
         updateRecipe(id: ID!, recipe: UpdateRecipeInput!): Boolean!
         deleteRecipe(id: ID!): Boolean!
     }
@@ -16,7 +16,7 @@ export const recipeTypeDefs = `#graphql
 
     type RecipeEdge {
         node: Recipe!
-        cursor: String
+        cursor: String!
     }
 
     type PageInfo {
@@ -33,7 +33,7 @@ export const recipeTypeDefs = `#graphql
         createdBy: User!
         createdAt: String!
         updatedAt: String!
-        tags: [Tag]!
+        tags: [Tag!]!
         instructions: [Instruction!]!
     }
 
