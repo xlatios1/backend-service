@@ -16,7 +16,7 @@ export const recipeResolvers = {
 			if (!user) throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE)
 
 			const { recipeId } = args
-			return instructionService.getInstructionsById(Number(recipeId))
+			return await instructionService.getInstructionsById(Number(recipeId))
 		},
 	},
 
@@ -24,19 +24,19 @@ export const recipeResolvers = {
 		createdBy: async (parent, _args, { user }) => {
 			if (!user) throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE)
 
-			return userService.getUser(Number(parent.createdBy))
+			return await userService.getUser(Number(parent.createdBy))
 		},
 
 		tags: async (parent, _args, { user }) => {
 			if (!user) throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE)
 
-			return tagsService.getTagsByRecipeId(Number(parent.id))
+			return await tagsService.getTagsByRecipeId(Number(parent.id))
 		},
 
 		instructions: async (parent, _args, { user }) => {
 			if (!user) throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE)
 
-			return instructionService.getInstructionsById(Number(parent.id))
+			return await instructionService.getInstructionsById(Number(parent.id))
 		},
 	},
 
@@ -45,21 +45,21 @@ export const recipeResolvers = {
 			if (!user) throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE)
 
 			const { recipe } = args
-			return recipeService.addRecipe(recipe)
+			return await recipeService.addRecipe(recipe)
 		},
 
 		updateRecipe: async (_parent, args, { user }) => {
 			if (!user) throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE)
 
 			const { id, recipe } = args
-			return recipeService.updateRecipe(id, recipe)
+			return await recipeService.updateRecipe(id, recipe)
 		},
 
 		deleteRecipe: async (_parent, args, { user }) => {
 			if (!user) throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE)
 
 			const { id } = args
-			return recipeService.deleteRecipe(Number(id))
+			return await recipeService.deleteRecipe(Number(id))
 		},
 	},
 }

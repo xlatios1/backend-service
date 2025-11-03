@@ -27,6 +27,12 @@ export async function up(queryInterface, Sequelize) {
 			created_at: new Date(),
 			updated_at: new Date(),
 		},
+		{
+			recipe_id: 3,
+			tag_id: 1,
+			created_at: new Date(),
+			updated_at: new Date(),
+		},
 	]
 	await queryInterface.bulkInsert('recipe_tags', recipeTags)
 }

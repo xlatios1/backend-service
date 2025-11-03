@@ -20,6 +20,7 @@ const apolloServer = new ApolloServer({
 	introspection: true, //process.env.NODE_ENV !== 'production',
 	validationRules: [depthLimit(5)],
 	formatError: (err) => {
+    // console.log('Failed to handle error. Error:', err)
 		if (
 			err.extensions?.code === ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED
 		) {
@@ -34,8 +35,6 @@ const apolloServer = new ApolloServer({
 				code: err.extensions.code,
 			}
 		}
-
-		console.log('Failed to handle error. Error:', err)
 		return err
 	},
 })

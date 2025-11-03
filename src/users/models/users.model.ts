@@ -28,27 +28,27 @@ export class UsersDBModel extends Model<UsersType> {
 		field: 'username',
 		type: DataType.STRING,
 	})
-	username: string
+	declare username: string
 
 	@AllowNull(false)
 	@Column({
 		field: 'password',
 		type: DataType.STRING,
 	})
-	password: string
+	declare password: string
 
 	@AllowNull(false)
 	@Column({
 		field: 'display_name',
 		type: DataType.STRING,
 	})
-	displayName: string
+	declare displayName: string
 
 	@Column({
 		field: 'image_url',
 		type: DataType.STRING,
 	})
-	imageUrl: string
+	declare imageUrl: string
 
 	@HasMany(() => StrawberryDBModel)
 	Strawberries: StrawberryDBModel

@@ -47,6 +47,27 @@ export async function up(queryInterface, Sequelize) {
 			created_at: new Date(),
 			updated_at: new Date(),
 		},
+		{
+			// id: 5,
+			recipe_id: 2,
+			item: 'Eggs',
+			description: 'Take Eggs.',
+			image_url:
+				'https://img.freepik.com/free-photo/brown-egg_2829-13453.jpg?t=st=1755615694~exp=1755619294~hmac=1cbb624acc9cb07b9c4a1a3c09edd428cc9a7de0e81cd4b0f49fd6986e5852b9&w=1480',
+			order: 1,
+			created_at: new Date(),
+			updated_at: new Date(),
+		},
+		{
+			// id: 6,
+			recipe_id: 2,
+			description: 'Fry the eggs',
+			image_url:
+				'https://static01.nyt.com/images/2021/12/07/dining/AS-olive-oil-fried-egg/merlin_195254193_650a29e7-3d2c-4b62-9735-a9a1999d8fff-threeByTwoMediumAt2X.jpg?quality=75&auto=webp',
+			order: 2,
+			created_at: new Date(),
+			updated_at: new Date(),
+		},
 	]
 	await queryInterface.bulkInsert('instructions', instructions)
 }

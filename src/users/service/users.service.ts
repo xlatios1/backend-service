@@ -105,7 +105,6 @@ export class UserService {
 			},
 			{ raw: true }
 		)
-
 		return await this.generateAuthResponse(newUser)
 	}
 

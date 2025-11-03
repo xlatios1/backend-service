@@ -11,13 +11,13 @@ export const strawberryResolvers = {
 		getAllStrawberry: async (_parent, _args, { user }) => {
 			if (!user) throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE)
 
-			return strawberryService.getAllStrawberry()
+			return await strawberryService.getAllStrawberry()
 		},
 
 		getStrawberryById: async (_parent, _args, { user }) => {
 			if (!user) throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE)
 
-			return strawberryService.getAllStrawberryById(Number(user.id))
+			return await strawberryService.getAllStrawberryById(Number(user.id))
 		},
 	},
 
@@ -30,7 +30,7 @@ export const strawberryResolvers = {
 			// 	resourceOwnerId: Number(parent.userId),
 			// })
 
-			return userService.getUser(Number(parent.userId))
+			return await userService.getUser(Number(parent.userId))
 		},
 	},
 
@@ -38,7 +38,7 @@ export const strawberryResolvers = {
 		addStrawberry: async (_parent, args, { user }) => {
 			if (!user) throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE)
 
-			return strawberryService.addStrawberryById(
+			return await strawberryService.addStrawberryById(
 				Number(args.id),
 				Number(args.count),
 				args.comments
